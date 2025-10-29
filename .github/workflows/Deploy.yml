@@ -1,0 +1,135 @@
+name: Laravel CI & Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # -------------------------------
+  # ① CIテストジョブ
+  # -------------------------------
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: "root"
+          MYSQL_DATABASE: LaravelTest
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: secret
+        ports:
+          - 3306:3306
+
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      # コード取得
+      - uses: actions/checkout@v4
+
+      # PHP セットアップ
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql
+          coverage: none
+
+      # Composer キャッシュ
+      - uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      # Composer インストール
+      - run: |
+            cd laravel-project
+            composer install --prefer-dist --no-progress
+      # .env 設定
+      - name: Create .env
+        run: |
+          cd laravel-project
+          cp .env.example .env
+          php artisan key:generate
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=LaravelTest" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=root" >> .env
+          for i in {1..15}; do
+            nc -z db 3306 && echo "✅ MySQL is ready" && break
+            echo "⏳ Waiting for MySQL..."
+            sleep 3
+          done
+          
+      # マイグレーション
+      - run: |
+          cd laravel-project
+          php artisan migrate --force
+      # テスト実行
+      - run: |
+          cd laravel-project
+          php artisan test
+  # -------------------------------
+  # ② デプロイジョブ（テスト成功後にのみ実行）
+  # -------------------------------
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # mainブランチのみデプロイ
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            APP_DIR=CI_Test
+            echo "----🚀 デプロイ----"
+            if [ ! -d "$APP_DIR" ]; then
+              echo "初回デプロイ: リポジトリをクローン中..."
+              git clone -b main https://github.com/${{ github.repository }} $APP_DIR
+              cd $APP_DIR
+            else
+              echo "既存リポジトリを更新中..."
+              cd $APP_DIR
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+            cd laravel-project
+            echo "Composer install..."
+            composer install --no-dev --optimize-autoloader
+            echo "コンテナを起動..."
+            cd ..
+            ls -la
+            docker compose down
+            docker compose up -d --build
+
+            echo "マイグレーション実行 (Docker内)..."
+            run: |
+              for i in {1..30}; do
+                if docker compose exec -T db mysqladmin ping -h"db" -u"db-user" -p"db-pass" --silent; then
+                  echo "✅ MySQL is ready"
+                  break
+                fi
+                echo "⏳ Waiting for MySQL..."
+                sleep 2
+              done
+
+            run: |
+              #docker compose exec -T app sh -c "cd laravel-project && php artisan migrate --force"
+            echo "✅ デプロイ完了!"
