@@ -98,7 +98,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            APP_DIR=CI_Test
+            APP_DIR=TabeNikki
             echo "----🚀 デプロイ----"
             if [ ! -d "$APP_DIR" ]; then
               echo "初回デプロイ: リポジトリをクローン中..."
