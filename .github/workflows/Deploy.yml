@@ -110,9 +110,9 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
             fi
-            cd laravel-project
             echo "Composer install..."
-            composer install --no-dev --optimize-autoloader
+            docker compose exec -T app sh -c "cd laravel-project && composer install --no-dev --optimize-autoloader"
+
             echo "コンテナを起動.."
             cd ..
             ls -la
