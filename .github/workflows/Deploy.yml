@@ -110,6 +110,7 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
             fi
+            docker compose up -d
             echo "Composer install..."
             docker compose exec -T app sh -c "cd laravel-project && composer install --no-dev --optimize-autoloader"
 
