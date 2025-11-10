@@ -10,7 +10,7 @@ class ContentContoller extends Controller
 {
     public function index(Request $request,Response $response){
         $content = Content::all();
-        //dd($content);
+        //dd($content); テスト用
         return view('test',['items' => $content]);
     }
 }
