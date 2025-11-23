@@ -19,7 +19,7 @@ class ContentSeeder extends Seeder
             'price' => 650,
             'place' => '横浜駅',
             'thoughts' => '美味しい',
-            'user_id' => 2
+            'user_id' => 7
         ]);
 
         DB::table('contents')->insert([
@@ -28,7 +28,7 @@ class ContentSeeder extends Seeder
             'price' => 700,
             'place' => '桜木町',
             'thoughts' => 'シンプルなカレーライス',
-            'user_id' => 2
+            'user_id' => 7
         ]);
     }
 }

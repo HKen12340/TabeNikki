@@ -20,4 +20,5 @@ Route::middleware('auth')->group(function(){
     Route::get('/profile',[\App\Http\Controllers\UserController::class,'profile'])->name('profile');
     Route::post('/logout',[\App\Http\Controllers\UserController::class,'logout'])->name('user.logout');
     Route::get('/index',[App\Http\Controllers\ContentContoller::class,'index'])->name('index');
+    Route::get('/registform',[App\Http\Controllers\ContentContoller::class,'showContentRegistForm'])->name('showContentRegistForm');
 });
