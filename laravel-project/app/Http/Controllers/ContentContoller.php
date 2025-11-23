@@ -21,7 +21,5 @@ class ContentContoller extends Controller
 
     public function registContent(Request $request){
 
-        Storage::put("", "");
-
     }
 }
