@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Content;
 
+
 class ContentContoller extends Controller
 {
     public function index(Request $request,Response $response){
-        $content = Content::all();
+
+        $content = Content::get();
         //dd($content); テスト用
-        return view('test',['items' => $content]);
+        return view('index',['items' => $content]);
     }
 }

@@ -27,7 +27,7 @@ class UserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('profile');
+        return redirect()->route('index');
     }
 
     public function profile(){
@@ -45,7 +45,7 @@ class UserController extends Controller
         //DBで値の照合を行う
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-            return redirect()->intended('profile');
+            return redirect()->intended('index');
         }
 
         return back();

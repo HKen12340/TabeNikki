@@ -1,0 +1,17 @@
+{{\Illuminate\Support\Facades\Auth::user()->name}}でログインしています。
+<form action="{{route('user.logout')}}" method="post">
+    @csrf
+    <button>ログアウト</button>
+</form>
+
+<div style="width:70%;margin:auto; ">
+    <div style="display: flex;flex-wrap: wrap;">
+    @foreach ($items as $item)
+        <div style="min-width: 30%;border:1px black solid;padding:5px;margin:5px;">
+            <p>料理名：{{$item->food_name}}</p>
+            <p>店名：{{$item->shop_name}}</p>
+            <p>料金：{{$item->price}}</p>
+        </div>
+    @endforeach
+    </div>
+</div>
