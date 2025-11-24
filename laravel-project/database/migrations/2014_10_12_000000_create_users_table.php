@@ -26,8 +26,9 @@ return new class extends Migration
             $table->string('food_name');
             $table->string('shop_name');
             $table->string('price');
+            $table->string('visit_date');
             $table->text('place');
-            $table->text('thoughts');
+            $table->text('thoughts')->nullable();
             $table->timestamps();
             $table->foreignId('user_id')
             ->constrained()
@@ -37,8 +38,8 @@ return new class extends Migration
 
         Schema::create('images',function(Blueprint $table){
             $table->id();
-            $table->text('food_img');
-            $table->text('shop_img');
+            $table->text('food_img')->nullable();
+            $table->text('shop_img')->nullable();
             $table->foreignId('content_id')
             ->constrained()
             ->onUpdate('cascade')
