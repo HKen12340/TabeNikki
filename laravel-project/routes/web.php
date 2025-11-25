@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/',[\App\Http\Controllers\UserController::class,'showLogin']);
 Route::post('/',[\App\Http\Controllers\UserController::class,'login'])->name('login');
 
-Route::get('/register',[\App\Http\Controllers\UserController::class,'showRegister']);
+Route::get('/register',[\App\Http\Controllers\UserController::class,'showRegister'])->name('userRegistForm');
 Route::post('/register',[\App\Http\Controllers\UserController::class,'register']);
 
 Route::middleware('auth')->group(function(){
@@ -21,4 +21,5 @@ Route::middleware('auth')->group(function(){
     Route::post('/logout',[\App\Http\Controllers\UserController::class,'logout'])->name('user.logout');
     Route::get('/index',[App\Http\Controllers\ContentContoller::class,'index'])->name('index');
     Route::get('/registform',[App\Http\Controllers\ContentContoller::class,'showContentRegistForm'])->name('showContentRegistForm');
+    Route::post('/registform',[App\Http\Controllers\ContentContoller::class,'registContent'])->name('ContentRegist');
 });

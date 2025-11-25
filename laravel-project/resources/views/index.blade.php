@@ -9,6 +9,7 @@
     <div style="display: flex;flex-wrap: wrap;">
     @foreach ($items as $item)
         <div style="min-width: 30%;border:1px black solid;padding:5px;margin:5px;">
+            <img src={{ asset(optional($item->image)->food_img) }} alt="">
             <p>料理名：{{$item->food_name}}</p>
             <p>店名：{{$item->shop_name}}</p>
             <p>料金：{{$item->price}}</p>

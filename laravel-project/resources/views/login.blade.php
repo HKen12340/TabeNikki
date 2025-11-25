@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>ログイン</h1>
+    <a href={{route("userRegistForm")}}>ユーザ登録</a>
     <form action="/" method="post">
         @csrf
         <label for="name">名前：</label><input type="email" name="email">
