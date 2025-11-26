@@ -4,7 +4,6 @@
     <button>ログアウト</button>
 </form>
 <a href={{route('showContentRegistForm')}} >登録フォーム</a>
-
 <div style="width:70%;margin:auto; ">
     <div style="display: flex;flex-wrap: wrap;">
     @foreach ($items as $item)
