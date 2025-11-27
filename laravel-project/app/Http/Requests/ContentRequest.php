@@ -27,7 +27,17 @@ class ContentRequest extends FormRequest
             "price" => "required|min:0",
             "visit_date" => "required",
             "place" => "required|max:100",
-            "thoughts" => "max:300"
+            "thoughts" => "max:300",
+            'food_img' => [
+                'file',
+                'mimes:jpg,jpeg,png',
+                'max:10240'
+            ],
+            'shop_img' => [
+                'file',
+                'mimes:jpg,jpeg,png',
+                'max:10240'
+            ]
         ];
     }
 }
