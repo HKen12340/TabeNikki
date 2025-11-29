@@ -85,6 +85,16 @@ class ContentContoller extends Controller
         }
 
         return redirect("/index");
+    }
 
+    public function detailContent($id){
+        $content = Content::where('id', '=' ,$id)->get();
+
+        //実装予定
+        //ユーザーIDとコンテンツのuser_idが異なる
+        //もしくはそもそも指定されたコンテンツIDがない場合は404 NotFoundを出す
+
+        //dd($content);
+        return view('content',['items' => $content]);
     }
 }

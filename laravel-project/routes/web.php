@@ -22,4 +22,5 @@ Route::middleware('auth')->group(function(){
     Route::get('/index',[App\Http\Controllers\ContentContoller::class,'index'])->name('index');
     Route::get('/registform',[App\Http\Controllers\ContentContoller::class,'showContentRegistForm'])->name('showContentRegistForm');
     Route::post('/registform',[App\Http\Controllers\ContentContoller::class,'registContent'])->name('ContentRegist');
+    Route::get('/content/{id}',[App\Http\Controllers\ContentContoller::class,'detailContent'])->name('detailContent');
 });

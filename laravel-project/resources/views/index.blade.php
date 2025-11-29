@@ -12,6 +12,8 @@
             <p>料理名：{{$item->food_name}}</p>
             <p>店名：{{$item->shop_name}}</p>
             <p>料金：{{$item->price}}</p>
+
+            <a href={{route('detailContent',['id' => $item->id])}}>テスト</a>
         </div>
     @endforeach
     </div>
