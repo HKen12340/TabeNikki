@@ -11,9 +11,9 @@ use App\Http\Requests\ContentRequest;
 
 class ContentContoller extends Controller
 {
+
     public function index(){
         $content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->get();
-        //dd($content); //テスト用
         return view('index',['items' => $content]);
     }
 
@@ -37,44 +37,8 @@ class ContentContoller extends Controller
                 "user_id" => Auth::user()->id
             ]);
 
-
-            //料理の写真をアップロード
-            $food_img = $request->file("food_img");
-
-            if($request->hasFile("food_img")){
-                //拡張子の取得
-                $food_img_extension = $food_img->getClientOriginalExtension();
-
-                //料理の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
-                $food_img_name = "food".Auth::user()->id."_".$content->id.".".$food_img_extension;
-
-                // 料理の写真を公開ディレクトリに保存
-                Storage::putFileAs("public",$food_img,$food_img_name);
-
-                $food_img_name = "storage/".$food_img_name;
-
-            }else{
-                $food_img_name = null;
-            }
-
-            //お店の写真をアップロード
-            $shop_img = $request->file("shop_img");
-
-            if($request->hasFile("shop_img")){
-                //拡張子の取得
-                $shop_img_extension = $shop_img->getClientOriginalExtension();
-
-                //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
-                $shop_img_name = "shop".Auth::user()->id."_".$content->id.".".$shop_img_extension;
-
-                // 店の写真を公開ディレクトリに保存
-                Storage::putFileAs("public",$shop_img,$shop_img_name);
-
-                $shop_img_name = "storage/".$shop_img_name;
-            }else{
-                $shop_img_name = null;
-            }
-
+            $food_img_name = $this->UploadImage($request,$content,"food_img");
+            $shop_img_name = $this->UploadImage($request,$content,"shop_img");
 
             //写真データの保存
             Image::create([
@@ -88,13 +52,91 @@ class ContentContoller extends Controller
     }
 
     public function detailContent($id){
-        $content = Content::where('id', '=' ,$id)->get();
-
+        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->get();
         //実装予定
         //ユーザーIDとコンテンツのuser_idが異なる
-        //もしくはそもそも指定されたコンテンツIDがない場合は404 NotFoundを出す
+        //もしくはそもそも指定されたコンテンツIDがない場合は404 NotFound ページを出す
+        if(count($content) == 0){
+            return redirect("/notFound");
+        }
 
-        //dd($content);
         return view('content',['items' => $content]);
     }
+
+    public function updateForm($id){
+        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->get();
+
+        if(count($content) == 0){
+            return view("/notFound");
+        }
+
+        return view('update',['items' => $content]);
+    }
+
+    public function updateContent(ContentRequest $request){
+
+        $content = Content::find($request->id);
+
+        $content->updated([
+            "food_name" => $request->food_name,
+            "shop_name" => $request->shop_name,
+            "price" => $request->price,
+            "visit_date" => $request->visit_date,
+            "place" => $request->place
+        ]);
+
+        //なんかバグあり
+        $image = Image::where('content_id','=',$content->id)->first();
+        $food_img_name = $image->food_img ?? null;
+        $shop_img_name = $image->shop_img ?? null;
+
+        if($request->hasFile("food_img")){
+            $this->DeleteImage($content,"food_img");
+            $food_img_name = $this->UploadImage($request,$content,"food_img");
+        }
+
+        if($request->hasFile("shop_img")){
+            $this->DeleteImage($content,"shop_img");
+            $shop_img_name = $this->UploadImage($request,$content,"shop_img");
+        }
+
+        $image->update([
+            "food_img" => $food_img_name,
+            "shop_img" => $shop_img_name,
+        ]);
+
+        return redirect("/index");
+    }
+
+    //写真アップロード関数 (リクエスト、Contentモデル、属性nameの名前)
+    public function UploadImage(Request $request,Content $content,$filename){
+
+        if($request->hasFile($filename)){
+            //お店の写真をアップロード
+            $imgfile = $request->file($filename);
+
+            //拡張子の取得
+            $img_extension = $imgfile->getClientOriginalExtension();
+
+            //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
+            $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
+            // 店の写真を公開ディレクトリに保存
+            Storage::putFileAs("public",$imgfile,$imgname);
+
+            return "storage/".$imgname;
+        }else{
+            return null;
+        }
+    }
+
+    public function DeleteImage(Content $content,$filename){
+        $image = Image::find($content->id);
+
+        if($filename == "food_img" && $image && is_null($image->food_img)){
+            Storage::delete($image->food_img);
+        }else if($image && is_null($image->shop_img)){
+            Storage::delete($image->shop_img);
+        }
+    }
+
 }
