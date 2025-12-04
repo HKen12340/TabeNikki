@@ -26,7 +26,6 @@ class UserController extends Controller
         ]);
 
         Auth::login($user);
-
         return redirect()->route('index');
     }
 
@@ -54,5 +53,9 @@ class UserController extends Controller
     public function logout(){
         Auth::logout();
         return redirect('/');
+    }
+
+    public function notFound(){
+        redirect('/notFound');
     }
 }
