@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>登録フォーム</h2>
+    <h2>更新フォーム</h2>
 
     {{--  エラーメッセージをすべて表示する  --}}
     @if ($errors->any())
