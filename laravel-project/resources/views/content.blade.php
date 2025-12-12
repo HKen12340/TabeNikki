@@ -6,7 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    @foreach ($items as $item)
     <a href={{route('updateForm',['id' => $item->id])}} >更新</a>
         <h2>料理名：{{$item->food_name}}</h2>
         <img src={{ asset(optional($item->image)->food_img) }} alt="">
@@ -18,6 +17,5 @@
 
         お店の外観
         <img src={{ asset(optional($item->image)->shop_img) }} alt="">
-    @endforeach
 </body>
 </html>

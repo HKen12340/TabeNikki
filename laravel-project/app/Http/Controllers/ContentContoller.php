@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Content;
 use App\Models\Image;
 use App\Http\Requests\ContentRequest;
+use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentContoller extends Controller
 {
@@ -52,25 +54,24 @@ class ContentContoller extends Controller
     }
 
     public function detailContent($id){
-        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->get();
-        //実装予定
-        //ユーザーIDとコンテンツのuser_idが異なる
-        //もしくはそもそも指定されたコンテンツIDがない場合は404 NotFound ページを出す
-        if(count($content) == 0){
+        try{
+            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+        }catch(NotFoundHttpException){
             return redirect("/notFound");
         }
-
-        return view('content',['items' => $content]);
+        return view('content',['item' => $content]);
     }
 
     public function updateForm($id){
-        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->get();
 
-        if(count($content) == 0){
-            return view("/notFound");
-        }
+    try{
+        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+    }catch(NotFoundHttpException){
+        return view("/notFound");
+    }
 
-        return view('update',['items' => $content]);
+
+        return view('update',['item' => $content]);
     }
 
     public function updateContent(ContentRequest $request){
@@ -85,7 +86,6 @@ class ContentContoller extends Controller
             "place" => $request->place
         ]);
 
-        //なんかバグあり
         $image = Image::where('content_id','=',$content->id)->first();
         $food_img_name = $image->food_img ?? null;
         $shop_img_name = $image->shop_img ?? null;
@@ -112,21 +112,66 @@ class ContentContoller extends Controller
     public function UploadImage(Request $request,Content $content,$filename){
 
         if($request->hasFile($filename)){
-            //お店の写真をアップロード
+             //お店の写真をアップロード
             $imgfile = $request->file($filename);
 
             //拡張子の取得
             $img_extension = $imgfile->getClientOriginalExtension();
 
-            //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
+            //     //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
             $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
+
             // 店の写真を公開ディレクトリに保存
-            Storage::putFileAs("public",$imgfile,$imgname);
+            // Storage::putFileAs("public",$imgfile,$imgname);
+
+
+                //加工前の画像情報を取得
+        list($original_w,$original_h,$type) = getimagesize($imgfile);
+
+        //加工したいファイルをフォーマット別に読み出す
+        switch($type){
+            case IMAGETYPE_JPEG:
+                $original_image = imagecreatefromjpeg($imgfile);
+                break;
+            case IMAGETYPE_PNG:
+                $original_image = imagecreatefrompng($imgfile);
+                break;
+            case IMAGETYPE_GIF:
+                $original_image = imagecreatefromgif($imgfile);
+                break;
+            default:
+                throw new RuntimeException('対応していないファイル形式です:',$type);
+        }
+
+            // 元の画像のサイズを取得
+        $source_width = imagesx($original_image);
+        $source_height = imagesy($original_image);
+
+        $canvas = imagecreatetruecolor("100","100");
+        imagecopyresampled($canvas,$original_image,0,0,0,0,"100","100",$source_width,$source_height);
+
+        $file_path = public_path("storage/".$imgname);
+
+        switch($type){
+            case IMAGETYPE_JPEG:
+                imagejpeg($canvas,$file_path);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($canvas,$file_path,9);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($canvas,$file_path);
+                break;
+        }
+
+        //imagedestroy($image_file);
+        //imagedestroy($canvas);
 
             return "storage/".$imgname;
         }else{
             return null;
         }
+
     }
 
     public function DeleteImage(Content $content,$filename){
@@ -138,5 +183,4 @@ class ContentContoller extends Controller
             Storage::delete($image->shop_img);
         }
     }
-
 }

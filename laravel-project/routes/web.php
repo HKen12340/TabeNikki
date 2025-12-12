@@ -15,7 +15,7 @@ Route::post('/',[\App\Http\Controllers\UserController::class,'login'])->name('lo
 
 Route::get('/register',[\App\Http\Controllers\UserController::class,'showRegister'])->name('userRegistForm');
 Route::post('/register',[\App\Http\Controllers\UserController::class,'register']);
-Route::get('/notFound',[\App\Http\Controllers\UserController::class,'notFound'])->name('notFound');;
+Route::get('/notFound',[\App\Http\Controllers\UserController::class,'notFound'])->name('notFound');
 
 Route::middleware('auth')->group(function(){
     Route::get('/profile',[\App\Http\Controllers\UserController::class,'profile'])->name('profile');

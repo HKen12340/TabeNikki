@@ -13,7 +13,7 @@
             <p>店名：{{$item->shop_name}}</p>
             <p>料金：{{$item->price}}</p>
 
-            <a href={{route('detailContent',['id' => $item->id])}}>テスト</a>
+            <a href={{route('detailContent',['id' => $item->id])}}>詳細</a>
         </div>
     @endforeach
     </div>
