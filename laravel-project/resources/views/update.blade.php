@@ -17,7 +17,6 @@
         </ul>
     @endif
 
-    {{--  @foreach ($items as $item)  --}}
     <form action={{route('updateContent',['id' => $item->id])}} method="POST" enctype="multipart/form-data">
         @csrf
         <table>
@@ -43,6 +42,5 @@
         お店の外観
         <img src={{ asset(optional($item->image)->shop_img) }} alt="">
     </form>
-    {{--  @endforeach  --}}
 </body>
 </html>

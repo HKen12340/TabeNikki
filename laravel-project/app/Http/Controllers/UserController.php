@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\NewUserIntroduction;
+use Illuminate\Contracts\Mail\Mailer;
+
 
 class UserController extends Controller
 {
@@ -18,12 +21,15 @@ class UserController extends Controller
         return view('register');
     }
 
-    public function register(Request $request){
+    public function register(Request $request,Mailer $mailer){
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
+
+        $mailer->to('test@exemple.com')
+        ->send(new NewUserIntroduction);
 
         Auth::login($user);
         return redirect()->route('index');
