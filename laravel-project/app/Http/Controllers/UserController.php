@@ -22,6 +22,11 @@ class UserController extends Controller
     }
 
     public function register(Request $request,Mailer $mailer){
+
+        if(count(User::where('name','=',$request->name)->get()) || count(User::where('email','=',$request->email)->get())){
+            return back();
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -52,8 +57,9 @@ class UserController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('index');
         }
-
-        return back();
+        
+        //フラッシュエラーメッセージ
+        return back()->withErrors(['msg' => 'メールアドレスかパスワードが間違っています']);
     }
 
     public function logout(){

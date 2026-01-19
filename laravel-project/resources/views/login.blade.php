@@ -7,6 +7,10 @@
 </head>
 <body>
     <h1>ログイン</h1>
+    <!-- フラッシュエラーメッセージ -->
+    @if ($errors->has('msg'))
+        <p>{{$errors->first('msg')}}</p>
+    @endif
     <a href={{route("userRegistForm")}}>ユーザ登録</a>
     <form action="/" method="post">
         @csrf
