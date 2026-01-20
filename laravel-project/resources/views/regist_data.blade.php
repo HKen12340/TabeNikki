@@ -3,41 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}" />
     <title>Document</title>
+    
 </head>
 <body>
-    <h2>登録フォーム</h2>
+    <div class="m-3">
+        <h2>登録フォーム</h2>
 
-    {{--  エラーメッセージをすべて表示する  --}}
-    @if ($errors->any())
-        <ul>
-            @foreach($errors->all() as $error)
-                <li><p style="color: red">{{$error}}</p></li>
-            @endforeach
-        </ul>
-    @endif
+        {{--  エラーメッセージをすべて表示する  --}}
+        @if ($errors->any())
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li><p style="color: red">{{$error}}</p></li>
+                @endforeach
+            </ul>
+        @endif
+        <div class="border col-7 p-4">
+            <div class="row">
+                <div class="col-md p-4">
+            <form action={{route('ContentRegist')}} method="POST" enctype="multipart/form-data">
+                @csrf
+                
+                    <div class="form-grou mb-3">
+                        <label>food_name:</label>
+                        <input type="text" class="form-control" name="food_name" maxlength="100" required>
+                    </div>
+                    <div class="form-grou mb-3">
+                        <label>shop_name:</label>
+                        <input type="text" class="form-control" name="shop_name" maxlength="100" required>
+                    </div>
+                    <div class="form-grou mb-3">
+                        <label for="">price:</label>
+                        <input type="number" class="form-control" name="price" required>
+                    </div>
+                    
+                    <div class="form-grou mb-3">
+                        <label for="">visit_date:</label>
+                        <input type="date" class="form-control" name="visit_date" required>
+                    </div>
 
-    <form action={{route('ContentRegist')}} method="POST" enctype="multipart/form-data">
-        @csrf
-        <table>
-                <tr>
-                    <td><input type="text" name="food_name" maxlength="100" required></td>
-                    <td><input type="text" name="shop_name" maxlength="100" required></td>
-                    <td><input type="number" name="price" required></td>
-                </tr>
-                <tr>
-                    <td><input type="date" name="visit_date" required></td>
-                    <td><input type="text" name="place" maxlength="100" required></td>
-                    <td><input type="file" name="food_img" ></td>
-                    <td><input type="file" name="shop_img" ></td>
-                </tr>
-                <tr>
-                    <td><textarea name="thoughts" maxlength="300"></textarea></td>
-                </tr>
-                <tr>
-                    <td><input type="submit"></td>
-                </tr>
-        </table>
-    </form>
+                    <div class="form-grou mb-3">
+                        <label for="">place:</label>
+                        <input type="text" class="form-control" name="place" maxlength="100" required>
+                    </div>
+
+                    <div class="form-grou mb-3">
+                        <label for="">food_img:</label>
+                        <input type="file" class="form-control" name="food_img" >
+                    </div>
+                    <div class="form-grou mb-3">
+                        <label for="">shop_img:</label>
+                        <input type="file" class="form-control" name="shop_img" >
+                    </div>
+                    <div class="form-grou mb-3">
+                        <label for="">thoughts:</label>
+                        <textarea name="thoughts" maxlength="300"></textarea>
+                    </div>
+                    <input type="submit" class="btn btn-primary">
+                </table>
+            </form>
+            </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
