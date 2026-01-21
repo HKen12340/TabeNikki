@@ -58,7 +58,7 @@
                     </div>
                     <div class="form-grou mb-3">
                         <label for="">thoughts:</label>
-                        <textarea name="thoughts" maxlength="300"></textarea>
+                        <textarea name="thoughts" maxlength="300" class="form-control"></textarea>
                     </div>
                     <input type="submit" class="btn btn-primary">
                 </table>

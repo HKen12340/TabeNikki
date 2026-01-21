@@ -13,19 +13,30 @@
         <button>ログアウト</button>
     </form>
     <a href={{route('showContentRegistForm')}} >登録フォーム</a>
-    <div style="width:70%;margin:auto; ">
-        <div style="display: flex;flex-wrap: wrap;">
-        @foreach ($items as $item)
-            <div style="min-width: 30%;border:1px black solid;padding:5px;margin:5px;">
-                <img src={{ asset(optional($item->image)->food_img) }} alt="">
-                <p>料理名：{{$item->food_name}}</p>
-                <p>店名：{{$item->shop_name}}</p>
-                <p>料金：{{$item->price}}</p>
+    <div class="container">
+            @foreach ($items as $item)
+                @if($loop->first)
+                    <div class="row">
+                @endif
 
-                <a href={{route('detailContent',['id' => $item->id])}}>詳細</a>
-            </div>
-        @endforeach
-        </div>
-    </div>    
+                @if($loop->index % 3 === 0)
+                    </div>
+                    <div class="row">
+                @endif
+                <div class="border col-4 m-3" style="max-width: 400px;">
+                    
+                    <img src={{ asset(optional($item->image)->food_img) }} alt="">
+                    <p>料理名：{{$item->food_name}}</p>
+                    <p>店名：{{$item->shop_name}}</p>
+                    <p>料金：{{$item->price}}</p>
+
+                    <a href={{route('detailContent',['id' => $item->id])}}>詳細</a>
+                </div>
+                @if($loop->last)
+                        </div>
+                @endif
+            @endforeach
+     </div>
+    
 </body>
 </html>
