@@ -9,9 +9,8 @@
 </head>
 <body>
     <div class="m-3">
-        <h1>登録画面</h1>
-        <div class="border col-7 p-4">
-        
+        <div class="border col-7 p-4 m-auto">
+            <h1>登録画面</h1>
             <form action="register" method="post">
                 @csrf
                 <div class="form-grou mb-3">

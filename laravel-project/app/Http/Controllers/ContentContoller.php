@@ -15,7 +15,9 @@ class ContentContoller extends Controller
 {
 
     public function index(){
-        $content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->get();
+        //$content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->get();
+
+        $content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->paginate(6);
         return view('index',['items' => $content]);
     }
 
@@ -64,12 +66,11 @@ class ContentContoller extends Controller
 
     public function updateForm($id){
 
-    try{
-        $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
-    }catch(NotFoundHttpException){
-        return view("/notFound");
-    }
-
+        try{
+            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+        }catch(NotFoundHttpException){
+            return view("/notFound");
+        }
 
         return view('update',['item' => $content]);
     }
@@ -77,14 +78,17 @@ class ContentContoller extends Controller
     public function updateContent(ContentRequest $request){
 
         $content = Content::find($request->id);
+        
 
-        $content->updated([
+        content::where('id',$request->id)->update([
             "food_name" => $request->food_name,
             "shop_name" => $request->shop_name,
             "price" => $request->price,
             "visit_date" => $request->visit_date,
+            "thoughts" => $request->thoughts,
             "place" => $request->place
         ]);
+
 
         $image = Image::where('content_id','=',$content->id)->first();
         $food_img_name = $image->food_img ?? null;
@@ -118,7 +122,7 @@ class ContentContoller extends Controller
             //拡張子の取得
             $img_extension = $imgfile->getClientOriginalExtension();
 
-            //     //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
+            //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
             $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
 
             // 店の写真を公開ディレクトリに保存
@@ -143,7 +147,7 @@ class ContentContoller extends Controller
                 throw new RuntimeException('対応していないファイル形式です:',$type);
         }
 
-            // 元の画像のサイズを取得
+        // 元の画像のサイズを取得
         $source_width = imagesx($original_image);
         $source_height = imagesy($original_image);
 

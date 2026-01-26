@@ -8,8 +8,8 @@
 </head>
 <body>
     <div class="m-3">
-        <h1>ログイン</h1>
-        <div class="border col-7 p-4">
+        <div class="border col-7 p-4 m-auto align-items-center">
+            <h1>ログイン</h1>
             <!-- フラッシュエラーメッセージ -->
             @if ($errors->has('msg'))
                 <p>{{$errors->first('msg')}}</p>
