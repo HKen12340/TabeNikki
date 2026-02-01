@@ -30,20 +30,18 @@ return new class extends Migration
             $table->text('place');
             $table->text('thoughts')->nullable();
             $table->timestamps();
-            $table->foreignId('user_id')
-            ->constrained()
-            ->onUpdate('cascade')
-            ->onDelete('cascade');
+            $table->foreignId('user_id');
         });
 
         Schema::create('images',function(Blueprint $table){
             $table->id();
-            $table->text('food_img')->nullable();
-            $table->text('shop_img')->nullable();
+            $table->text('food_img');
+            $table->text('shop_img');
             $table->foreignId('content_id')
             ->constrained()
             ->onUpdate('cascade')
             ->onDelete('cascade');
+            //削除をカスケードする
         });
     }
 
