@@ -26,4 +26,5 @@ Route::middleware('auth')->group(function(){
     Route::get('/content/{id}',[App\Http\Controllers\ContentContoller::class,'detailContent'])->name('detailContent');
     Route::get('/update/{id}',[App\Http\Controllers\ContentContoller::class,'updateForm'])->name('updateForm');
     Route::post('/update/{id}',[App\Http\Controllers\ContentContoller::class,'updateContent'])->name('updateContent');
+    Route::get('/delete/{id}',[App\Http\Controllers\ContentContoller::class,'DeleteContent'])->name('deleteContent');
 });

@@ -15,9 +15,8 @@ class ContentContoller extends Controller
 {
 
     public function index(){
-        //$content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->get();
-
-        $content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->paginate(6);
+        $content = Content::with(['Image'])->where('user_id','=' ,Auth::user()->id)->
+        orderBy('created_at','desc')->paginate(6);
         return view('index',['items' => $content]);
     }
 
@@ -79,7 +78,6 @@ class ContentContoller extends Controller
 
         $content = Content::find($request->id);
         
-
         content::where('id',$request->id)->update([
             "food_name" => $request->food_name,
             "shop_name" => $request->shop_name,
@@ -89,18 +87,17 @@ class ContentContoller extends Controller
             "place" => $request->place
         ]);
 
-
         $image = Image::where('content_id','=',$content->id)->first();
-        $food_img_name = $image->food_img ?? null;
-        $shop_img_name = $image->shop_img ?? null;
+        $food_img_name = $image->food_img;
+        $shop_img_name = $image->shop_img;
 
         if($request->hasFile("food_img")){
-            $this->DeleteImage($content,"food_img");
+            $this->DeleteImage($image->id,$food_img_name);
             $food_img_name = $this->UploadImage($request,$content,"food_img");
         }
 
         if($request->hasFile("shop_img")){
-            $this->DeleteImage($content,"shop_img");
+            $this->DeleteImage($image->id,$shop_img_name);
             $shop_img_name = $this->UploadImage($request,$content,"shop_img");
         }
 
@@ -125,66 +122,88 @@ class ContentContoller extends Controller
             //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
             $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
 
-            // 店の写真を公開ディレクトリに保存
-            // Storage::putFileAs("public",$imgfile,$imgname);
-
 
                 //加工前の画像情報を取得
-        list($original_w,$original_h,$type) = getimagesize($imgfile);
+            list($original_w,$original_h,$type) = getimagesize($imgfile);
 
-        //加工したいファイルをフォーマット別に読み出す
-        switch($type){
-            case IMAGETYPE_JPEG:
-                $original_image = imagecreatefromjpeg($imgfile);
-                break;
-            case IMAGETYPE_PNG:
-                $original_image = imagecreatefrompng($imgfile);
-                break;
-            case IMAGETYPE_GIF:
-                $original_image = imagecreatefromgif($imgfile);
-                break;
-            default:
-                throw new RuntimeException('対応していないファイル形式です:',$type);
-        }
+            //加工したいファイルをフォーマット別に読み出す
+            switch($type){
+                case IMAGETYPE_JPEG:
+                    $original_image = imagecreatefromjpeg($imgfile);
+                    break;
+                case IMAGETYPE_PNG:
+                    $original_image = imagecreatefrompng($imgfile);
+                    break;
+                case IMAGETYPE_GIF:
+                    $original_image = imagecreatefromgif($imgfile);
+                    break;
+                default:
+                    throw new RuntimeException('対応していないファイル形式です:',$type);
+            }
 
-        // 元の画像のサイズを取得
-        $source_width = imagesx($original_image);
-        $source_height = imagesy($original_image);
+            // 元の画像のサイズを取得
+            $source_width = imagesx($original_image);
+            $source_height = imagesy($original_image);
 
-        $canvas = imagecreatetruecolor("100","100");
-        imagecopyresampled($canvas,$original_image,0,0,0,0,"100","100",$source_width,$source_height);
+            $canvas = imagecreatetruecolor("100","100");
+            imagecopyresampled($canvas,$original_image,0,0,0,0,"100","100",$source_width,$source_height);
 
-        $file_path = public_path("storage/".$imgname);
+            $file_path = public_path("storage/".$imgname);
 
-        switch($type){
-            case IMAGETYPE_JPEG:
-                imagejpeg($canvas,$file_path);
-                break;
-            case IMAGETYPE_PNG:
-                imagepng($canvas,$file_path,9);
-                break;
-            case IMAGETYPE_GIF:
-                imagegif($canvas,$file_path);
-                break;
-        }
-
-        //imagedestroy($image_file);
-        //imagedestroy($canvas);
+            switch($type){
+                case IMAGETYPE_JPEG:
+                    imagejpeg($canvas,$file_path);
+                    break;
+                case IMAGETYPE_PNG:
+                    imagepng($canvas,$file_path,9);
+                    break;
+                case IMAGETYPE_GIF:
+                    imagegif($canvas,$file_path);
+                    break;
+            }
 
             return "storage/".$imgname;
+
         }else{
-            return null;
+            return "storage/NoImage.png";
         }
 
     }
 
-    public function DeleteImage(Content $content,$filename){
-        $image = Image::find($content->id);
 
-        if($filename == "food_img" && $image && is_null($image->food_img)){
-            Storage::delete($image->food_img);
-        }else if($image && is_null($image->shop_img)){
-            Storage::delete($image->shop_img);
+    public function DeleteImage($img_id,$filename){
+        $image = Image::find($img_id);
+
+        if($filename == "food_img"){
+            $str = str_replace("storage/","public/",$image->food_img);
+            Storage::delete($str);
+        }else{
+            $str = str_replace("storage/","public/",$image->shop_img);
+            Storage::delete($str);
         }
+
+    }
+
+    public function DeleteContent(Request $request){
+        
+        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $request->id)->get();
+        
+            
+            if(count($contents) > 0){
+                foreach($contents as $content){
+                    if($content->Image->food_img != "storage/NoImage.png"){
+                        $this->DeleteImage($content->Image->id,"food_img");
+                    }
+
+                    if($content->Image->shop_img != "storage/NoImage.png"){
+                            $this->DeleteImage($content->Image->id,"shop_img");
+                    }
+                }
+
+                Content::where('user_id' ,Auth::user()->id )->where('id' , $request->id)->first()->delete();
+                //削除がカスケードされ、content_id(外部キー)でつながっているimagesテーブルのレコードも削除される
+            }
+        
+        return redirect('/index');
     }
 }
