@@ -122,5 +122,5 @@ jobs:
             docker compose down
             docker compose up -d --build
             run: |
-              #docker compose exec -T app sh -c "cd laravel-project && php artisan migrate --force"
+              docker compose exec -T app sh -c "php artisan migrate --force"
             echo "✅ デプロイ完了!"
