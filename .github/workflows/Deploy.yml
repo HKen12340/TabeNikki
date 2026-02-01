@@ -116,7 +116,7 @@ jobs:
             fi
             docker compose up -d
             echo "Composer install..."
-            docker compose exec -T app sh -c "cd laravel-project && composer install --no-dev --optimize-autoloader"
+            docker compose exec -T app sh -c "composer install --no-dev --optimize-autoloader"
 
             echo "コンテナを起動.."
             docker compose down
