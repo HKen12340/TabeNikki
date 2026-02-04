@@ -9,9 +9,10 @@ use App\Models\Content;
 use App\Models\Image;
 use App\Http\Requests\ContentRequest;
 use RuntimeException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use odelNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class ContentContoller extends Controller
+class ContentController extends Controller
 {
 
     public function index(){
@@ -25,7 +26,6 @@ class ContentContoller extends Controller
     }
 
     public function registContent(ContentRequest $request){
-        //dd($request);
 
         //バリデーション通過
         if($request->validated()){
@@ -57,8 +57,8 @@ class ContentContoller extends Controller
     public function detailContent($id){
         try{
             $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
-        }catch(NotFoundHttpException){
-            return redirect("/notFound");
+        }catch(ModelNotFoundException){
+            return view("404NotFound");
         }
         return view('content',['item' => $content]);
     }
@@ -67,8 +67,8 @@ class ContentContoller extends Controller
 
         try{
             $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
-        }catch(NotFoundHttpException){
-            return view("/notFound");
+        }catch(ModelNotFoundException){
+            return view("404NotFound");
         }
 
         return view('update',['item' => $content]);
@@ -78,7 +78,7 @@ class ContentContoller extends Controller
 
         $content = Content::find($request->id);
         
-        content::where('id',$request->id)->update([
+        Content::where('id',$request->id)->update([
             "food_name" => $request->food_name,
             "shop_name" => $request->shop_name,
             "price" => $request->price,
@@ -92,12 +92,12 @@ class ContentContoller extends Controller
         $shop_img_name = $image->shop_img;
 
         if($request->hasFile("food_img")){
-            $this->DeleteImage($image->id,$food_img_name);
+            $this->DeleteImage($image->id,"food_img");
             $food_img_name = $this->UploadImage($request,$content,"food_img");
         }
 
         if($request->hasFile("shop_img")){
-            $this->DeleteImage($image->id,$shop_img_name);
+            $this->DeleteImage($image->id,"shop_img");
             $shop_img_name = $this->UploadImage($request,$content,"shop_img");
         }
 
@@ -145,7 +145,7 @@ class ContentContoller extends Controller
             $source_width = imagesx($original_image);
             $source_height = imagesy($original_image);
 
-            $canvas = imagecreatetruecolor("100","100");
+            $canvas = imagecreatetruecolor(100,100);
             imagecopyresampled($canvas,$original_image,0,0,0,0,"100","100",$source_width,$source_height);
 
             $file_path = public_path("storage/".$imgname);
@@ -161,6 +161,10 @@ class ContentContoller extends Controller
                     imagegif($canvas,$file_path);
                     break;
             }
+
+            
+            imagedestroy($original_image);
+            imagedestroy($canvas);
 
             return "storage/".$imgname;
 
@@ -184,9 +188,9 @@ class ContentContoller extends Controller
 
     }
 
-    public function DeleteContent(Request $request){
+    public function DeleteContent(Request $request,$id){
         
-        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $request->id)->get();
+        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $id)->get();
         
             
             if(count($contents) > 0){
@@ -200,7 +204,7 @@ class ContentContoller extends Controller
                     }
                 }
 
-                Content::where('user_id' ,Auth::user()->id )->where('id' , $request->id)->first()->delete();
+                Content::where('user_id' ,Auth::user()->id )->where('id' , $id)->first()->delete();
                 //削除がカスケードされ、content_id(外部キー)でつながっているimagesテーブルのレコードも削除される
             }
         

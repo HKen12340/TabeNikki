@@ -24,6 +24,6 @@ class Content extends Model
     ];
 
     public function Image(){
-        return $this->hasOne('App\Models\Image');
+        return $this->hasOne(Image::class);
     }
 }
