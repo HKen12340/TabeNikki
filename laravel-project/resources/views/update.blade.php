@@ -22,6 +22,7 @@
                     </ul>
                 @endif
                 <form action={{route('updateContent',['id' => $item->id])}} method="POST" enctype="multipart/form-data">
+                    @method('PATCH')
                     @csrf
                     <div class="form-grou mb-3">
                         <input type="text" name="food_name" maxlength="100" class="form-control" value={{$item->food_name}} required>

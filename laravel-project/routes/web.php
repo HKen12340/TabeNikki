@@ -25,6 +25,6 @@ Route::middleware('auth')->group(function(){
     Route::post('/registform',[App\Http\Controllers\ContentController::class,'registContent'])->name('ContentRegist');
     Route::get('/content/{id}',[App\Http\Controllers\ContentController::class,'detailContent'])->name('detailContent');
     Route::get('/update/{id}',[App\Http\Controllers\ContentController::class,'updateForm'])->name('updateForm');
-    Route::post('/update/{id}',[App\Http\Controllers\ContentController::class,'updateContent'])->name('updateContent');
-    Route::get('/delete/{id}',[App\Http\Controllers\ContentController::class,'DeleteContent'])->name('deleteContent');
+    Route::patch('/update/{id}',[App\Http\Controllers\ContentController::class,'updateContent'])->name('updateContent');
+    Route::delete('/delete/{id}',[App\Http\Controllers\ContentController::class,'DeleteContent'])->name('deleteContent');
 });

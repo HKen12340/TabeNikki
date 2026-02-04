@@ -189,11 +189,10 @@ class ContentController extends Controller
     }
 
     public function DeleteContent(Request $request,$id){
-        
-        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $id)->get();
-        
             
-            if(count($contents) > 0){
+        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $id)->get();
+
+            if($contents->count() > 0){
                 foreach($contents as $content){
                     if($content->Image->food_img != "storage/NoImage.png"){
                         $this->DeleteImage($content->Image->id,"food_img");

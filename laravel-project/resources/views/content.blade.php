@@ -28,7 +28,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-                    <a  href={{route('deleteContent',['id' => $item->id])}}   class="btn btn-danger">削除</a>
+                    <form action="{{route('deleteContent',['id' => $item->id])}}" method="post" >
+                        @csrf    
+                        @method("delete")
+                        <button  type="submit"   class="btn btn-danger">削除</a>
+                    </form>
                 </div>
             </div>
         </div>
