@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}" />
-      <title>Document</title>
-  </head>
-  <body>
-    @component('components.header')
-    @endcomponent
+@extends('layouts.base')
+
+@section('title',"記録一覧")
+
+@section('content')
       <div class="container">
               @foreach ($items as $item)
                   @if($loop->first)
@@ -40,5 +34,4 @@
                 {{$items->links()}}
               </div>
       </div>
-  </body>
-</html>
+ @endsection

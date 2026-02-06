@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('/bootstrap/bootstrap.min.css') }}" />
-    <title>Document</title>
-</head>
-<body>
+@extends('layouts.NoHeader_base')
+
+@section('title','ログイン画面')
+
+@section('content')
     <div class="m-3">
         <div class="border col-7 p-4 m-auto align-items-center">
             <h1>ログイン</h1>
@@ -29,5 +25,4 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+@endsection

@@ -22,7 +22,7 @@ class ContentController extends Controller
     }
 
     public function showContentRegistForm(){
-        return view('regist_data');
+        return view('CreateData');
     }
 
     public function registContent(ContentRequest $request){
@@ -71,7 +71,7 @@ class ContentController extends Controller
             return view("404NotFound");
         }
 
-        return view('update',['item' => $content]);
+        return view('EditData',['item' => $content]);
     }
 
     public function updateContent(ContentRequest $request){
