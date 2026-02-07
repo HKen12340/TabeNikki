@@ -53,19 +53,19 @@ class ContentController extends Controller
         return redirect("/index");
     }
 
-    public function detailContent($id){
+    public function detailContent(Request $request){
         try{
-            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+            $content = Content::where('id', '=' ,$request->id)->where('user_id','=',Auth::user()->id)->firstOrfail();
         }catch(ModelNotFoundException){
             return view("404NotFound");
         }
         return view('content',['item' => $content]);
     }
 
-    public function updateForm($id){
+    public function updateForm(Request $request){
 
         try{
-            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+            $content = Content::where('id', '=' ,$request->id)->where('user_id','=',Auth::user()->id)->firstOrfail();
         }catch(ModelNotFoundException){
             return view("404NotFound");
         }
@@ -73,45 +73,43 @@ class ContentController extends Controller
         return view('EditData',['item' => $content]);
     }
 
-    public function updateContent(ContentRequest $request,$id){
+    public function updateContent(ContentRequest $request){
 
         try{
-            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+            $content = Content::where('id', '=' ,$request->id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+            
+            Content::where('id',$request->id)->update([
+                "food_name" => $request->food_name,
+                "shop_name" => $request->shop_name,
+                "price" => $request->price,
+                "visit_date" => $request->visit_date,
+                "thoughts" => $request->thoughts,
+                "place" => $request->place
+            ]);
+
+            $image = Image::where('content_id','=',$content->id)->first();
+            $food_img_name = $image->food_img;
+            $shop_img_name = $image->shop_img;
+
+            if($request->hasFile("food_img")){
+                $this->DeleteImage($image->id,"food_img");
+                $food_img_name = $this->UploadImage($request,$content,"food_img");
+            }
+
+            if($request->hasFile("shop_img")){
+                $this->DeleteImage($image->id,"shop_img");
+                $shop_img_name = $this->UploadImage($request,$content,"shop_img");
+            }
+
+            $image->update([
+                "food_img" => $food_img_name,
+                "shop_img" => $shop_img_name,
+            ]);
+
+            return redirect("/index");
         }catch(ModelNotFoundException){
             return view("404NotFound");
         }
-
-        $content = Content::find($request->id);
-        
-        Content::where('id',$request->id)->update([
-            "food_name" => $request->food_name,
-            "shop_name" => $request->shop_name,
-            "price" => $request->price,
-            "visit_date" => $request->visit_date,
-            "thoughts" => $request->thoughts,
-            "place" => $request->place
-        ]);
-
-        $image = Image::where('content_id','=',$content->id)->first();
-        $food_img_name = $image->food_img;
-        $shop_img_name = $image->shop_img;
-
-        if($request->hasFile("food_img")){
-            $this->DeleteImage($image->id,"food_img");
-            $food_img_name = $this->UploadImage($request,$content,"food_img");
-        }
-
-        if($request->hasFile("shop_img")){
-            $this->DeleteImage($image->id,"shop_img");
-            $shop_img_name = $this->UploadImage($request,$content,"shop_img");
-        }
-
-        $image->update([
-            "food_img" => $food_img_name,
-            "shop_img" => $shop_img_name,
-        ]);
-
-        return redirect("/index");
     }
 
     //写真アップロード関数 (リクエスト、Contentモデル、属性nameの名前)
@@ -193,11 +191,11 @@ class ContentController extends Controller
 
     }
 
-    public function DeleteContent(Request $request,$id){
+    public function DeleteContent(Request $request){
             
-        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $id)->get();
+        $contents =  Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $request->id)->get();
 
-            if($contents->count() > 0){
+            if(Content::with(['Image'])->where('user_id' ,Auth::user()->id )->where('id' , $request->id)->exists()){
                 foreach($contents as $content){
                     if($content->Image->food_img != "storage/NoImage.png"){
                         $this->DeleteImage($content->Image->id,"food_img");
@@ -208,7 +206,7 @@ class ContentController extends Controller
                     }
                 }
 
-                Content::where('user_id' ,Auth::user()->id )->where('id' , $id)->first()->delete();
+                Content::where('user_id' ,Auth::user()->id )->where('id' , $request->id)->first()->delete();
                 //削除がカスケードされ、content_id(外部キー)でつながっているimagesテーブルのレコードも削除される
             }
         

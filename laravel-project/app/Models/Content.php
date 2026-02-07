@@ -18,9 +18,7 @@ class Content extends Model
         "visit_date",
         "place",
         "thoughts",
-        "user_id",
-        "created_at",
-        "updated_at"
+        "user_id"
     ];
 
     public function Image(){
