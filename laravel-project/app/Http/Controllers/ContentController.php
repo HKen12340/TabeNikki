@@ -9,7 +9,6 @@ use App\Models\Content;
 use App\Models\Image;
 use App\Http\Requests\ContentRequest;
 use RuntimeException;
-use odelNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ContentController extends Controller
@@ -74,7 +73,13 @@ class ContentController extends Controller
         return view('EditData',['item' => $content]);
     }
 
-    public function updateContent(ContentRequest $request){
+    public function updateContent(ContentRequest $request,$id){
+
+        try{
+            $content = Content::where('id', '=' ,$id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+        }catch(ModelNotFoundException){
+            return view("404NotFound");
+        }
 
         $content = Content::find($request->id);
         

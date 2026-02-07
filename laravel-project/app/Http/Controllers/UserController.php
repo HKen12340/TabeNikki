@@ -68,6 +68,6 @@ class UserController extends Controller
     }
 
     public function notFound(){
-        redirect('/notFound');
+        return redirect('/notFound');
     }
 }
