@@ -14,7 +14,7 @@
             <form action="/" method="post">
                 @csrf
                 <div class="form-grou mb-3">
-                    <label for="name">名前：</label>
+                    <label for="name">メールアドレス：</label>
                     <input type="email" class="form-control" name="email">
                 </div>
                 <div class="form-grou mb-3">
