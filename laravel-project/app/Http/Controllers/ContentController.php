@@ -165,7 +165,7 @@ class ContentController extends Controller
                     break;
             }
 
-            
+            //リソースの開放
             imagedestroy($original_image);
             imagedestroy($canvas);
 

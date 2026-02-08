@@ -123,5 +123,5 @@ jobs:
             docker compose down
             docker compose up -d --build
             echo "DBをリセットし、マイグレーション再実行"
-            docker compose exec -T app sh -c "php artisan refresh"
+            docker compose exec -T app sh -c "php artisan migrate:refresh"
             echo "✅ デプロイ完了!"
