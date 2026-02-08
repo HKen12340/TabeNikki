@@ -10,10 +10,15 @@
                 <p class="nav-link">ユーザー：{{\Illuminate\Support\Facades\Auth::user()->name}}</p>
             </li>
             <li>
-                                <form class="form-inline mx-2 my-2 my-lg-0" style="display: flex;gap:10px;">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> 
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+
+            <!-- 記録検索(index画面のみ使用) -->
+            @if(Request::is('index'))
+                <form class="form-inline mx-2 my-2 my-lg-0" style="display: flex;gap:10px;" action={{route('SearchContent')}} method="POST">
+                    @csrf
+                    <input class="form-control mr-sm-2" type="text" name="SearchText" placeholder="Search" aria-label="Search"> 
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            @endif
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('user.logout')}}">ログアウト</a>

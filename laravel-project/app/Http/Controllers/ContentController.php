@@ -212,4 +212,14 @@ class ContentController extends Controller
         
         return redirect('/index');
     }
+
+    //ヘッダー部分の料理と店の検索機能
+    public function SearchContent(Request $request){
+
+         $result = Content::where("food_name","like","%{$request->SearchText}%")->
+         orWhere("shop_name","like","%{$request->SearchText}%")->
+         orderBy('created_at','desc')->paginate(6);
+
+         return view('/index',['items' => $result]);
+    }
 }

@@ -27,4 +27,5 @@ Route::middleware('auth')->group(function(){
     Route::get('/update/{id}',[App\Http\Controllers\ContentController::class,'updateForm'])->name('updateForm');
     Route::patch('/update/{id}',[App\Http\Controllers\ContentController::class,'updateContent'])->name('updateContent');
     Route::delete('/delete/{id}',[App\Http\Controllers\ContentController::class,'DeleteContent'])->name('deleteContent');
+    Route::post('/index',[App\Http\Controllers\ContentController::class,'SearchContent'])->name("SearchContent");
 });
