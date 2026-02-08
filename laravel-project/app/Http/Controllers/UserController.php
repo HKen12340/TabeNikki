@@ -23,7 +23,8 @@ class UserController extends Controller
 
     public function register(Request $request,Mailer $mailer){
 
-        if(count(User::where('name','=',$request->name)->get()) || count(User::where('email','=',$request->email)->get())){
+        //ユーザ情報重複チェック
+        if(User::where('name','=',$request->name)->exists() || User::where('email','=',$request->email)->exists()){
             return back();
         }
 
@@ -33,9 +34,11 @@ class UserController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        //ウェルカムメール送信
         $mailer->to('test@exemple.com')
         ->send(new NewUserIntroduction);
 
+        //ログイン実行
         Auth::login($user);
         return redirect()->route('index');
     }
@@ -46,13 +49,12 @@ class UserController extends Controller
 
     public function login(Request $request){
 
-        //受け取った値をバリデーション検証
         $credentials = $request->validate([
             'email' => ['required','email'],
             'password' => ['required']
         ]);
 
-        //DBで値の照合を行う
+        //ユーザ情報照合
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
             return redirect()->intended('index');

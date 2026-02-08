@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use App\Repositories\ContentRepositoryInterface;
+use App\Repositories\ContentRepository;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            ContentRepositoryInterface::class,
+            ContentRepository::class
+        );
     }
 
     /**
