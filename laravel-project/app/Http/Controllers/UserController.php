@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Mail\NewUserIntroduction;
-use Illuminate\Contracts\Mail\Mailer;
+
 use App\Services\UserService;
 
 
@@ -22,11 +20,10 @@ class UserController extends Controller
         return view('register');
     }
 
-    public function register(Request $request,UserService $service,Mailer $mailer){
+    public function register(Request $request,UserService $service){
         $service->register($request);
         
-        $mailer->to('test@exemple.com')
-        ->send(new NewUserIntroduction);
+        event(new UserRegistered($request));
 
         return redirect()->route('index');
     }
