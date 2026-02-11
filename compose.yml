@@ -4,7 +4,7 @@ services:
     build: ./docker/php
     volumes:
       - .:/var/www
-    working_dir: /var/www
+    working_dir: /var/www/laravel-project
     depends_on:
       - mailhog
     networks:

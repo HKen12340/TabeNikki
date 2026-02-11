@@ -17,9 +17,9 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/laravel-project
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
-&& php composer-setup.php \
-&& php -r "unlink('composer-setup.php');" \
-&& mv composer.phar /usr/local/bin/composer
+RUN php composer-setup.php 
+RUN php -r "unlink('composer-setup.php');" 
+RUN mv composer.phar /usr/local/bin/composer
 
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
@@ -31,5 +31,3 @@ ENV PATH $PATH:/composer/vendor/bin
 
 
 RUN composer global require "laravel/installer"
-
-# WORKDIR /var/www
