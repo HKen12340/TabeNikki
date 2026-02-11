@@ -60,6 +60,7 @@ services:
     working_dir: /var/www/laravel-project
     command: php artisan queue:work --sleep=3 --tries=3
     depends_on:
+      - app
       - mysql
     restart: unless-stopped
     networks:
