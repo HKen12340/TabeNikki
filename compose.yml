@@ -4,6 +4,7 @@ services:
     build: ./docker/php
     volumes:
       - .:/var/www
+    working_dir: /var/www
     depends_on:
       - mailhog
     networks:
@@ -25,6 +26,7 @@ services:
 
   mailhog:
       image: mailhog/mailhog:latest
+      container_name: mailhog
       ports:
           - ${FORWARD_MAILHOG_PORT:-1025}:1025
           - ${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025
@@ -49,6 +51,32 @@ services:
       app_net:
         aliases:
           - mysql
+          
+  queue:
+    build: ./docker/php
+    container_name: queue-worker
+    volumes:
+      - .:/var/www
+    working_dir: /var/www/laravel-project
+    command: php artisan queue:work --sleep=3 --tries=3
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - app_net
+
+  scheduler:
+    build: ./docker/php
+    container_name: scheduler-worker
+    volumes:
+      - .:/var/www
+    working_dir: /var/www/laravel-project
+    command: sh -c "while true;do php artisan schedule:run;sleep 60; done"
+    depends_on:
+      - app
+      - mysql
+    networks:
+      - app_net    
 
 networks:
   app_net:
