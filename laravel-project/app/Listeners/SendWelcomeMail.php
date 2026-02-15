@@ -10,7 +10,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
-class SendWelcomeMail
+class SendWelcomeMail implements ShouldQueue
 {
     /**
      * Create the event listener.
