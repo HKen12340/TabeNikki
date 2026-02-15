@@ -137,4 +137,8 @@ class ContentService
         return $this->repo->SearchContent($request);
     }
 
+    public function WeekeEventMailSend(){
+        //メール内容の料理データを乱数でえらぶ
+    }
+
 }
