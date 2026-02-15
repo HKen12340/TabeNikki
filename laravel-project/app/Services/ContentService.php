@@ -10,6 +10,8 @@ use RuntimeException;
 use App\Http\Requests\ContentRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ContentService
 {
@@ -83,49 +85,15 @@ class ContentService
             //お店の写真のファイル名を指定(food + ユーザーID_コンテンツID.ファイル拡張子)
             $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
 
+            $manager = new ImageManager(new Driver());
+            $resize_image = $manager->read($imgfile)->resize(300,300);
 
-                //加工前の画像情報を取得
-            list($original_w,$original_h,$type) = getimagesize($imgfile);
+            //写真アップロード
+            Storage::disk('public')->put(
+                (string)$imgname,
+                (string)$resize_image->encode()
+            );
 
-            //加工したいファイルをフォーマット別に読み出す
-            switch($type){
-                case IMAGETYPE_JPEG:
-                    $original_image = imagecreatefromjpeg($imgfile);
-                    break;
-                case IMAGETYPE_PNG:
-                    $original_image = imagecreatefrompng($imgfile);
-                    break;
-                case IMAGETYPE_GIF:
-                    $original_image = imagecreatefromgif($imgfile);
-                    break;
-                default:
-                    throw new RuntimeException('対応していないファイル形式です:',$type);
-            }
-
-            // 元の画像のサイズを取得
-            $source_width = imagesx($original_image);
-            $source_height = imagesy($original_image);
-
-            $canvas = imagecreatetruecolor(100,100);
-            imagecopyresampled($canvas,$original_image,0,0,0,0,"100","100",$source_width,$source_height);
-
-            $file_path = public_path("storage/".$imgname);
-
-            switch($type){
-                case IMAGETYPE_JPEG:
-                    imagejpeg($canvas,$file_path);
-                    break;
-                case IMAGETYPE_PNG:
-                    imagepng($canvas,$file_path,9);
-                    break;
-                case IMAGETYPE_GIF:
-                    imagegif($canvas,$file_path);
-                    break;
-            }
-
-            //リソースの開放
-            imagedestroy($original_image);
-            imagedestroy($canvas);
 
             return "storage/".$imgname;
 
