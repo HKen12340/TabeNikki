@@ -139,6 +139,7 @@ class ContentService
 
     public function WeekeEventMailSend(){
         //メール内容の料理データを乱数でえらぶ
+        
     }
 
 }

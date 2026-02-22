@@ -1,0 +1,1 @@
+{{$user->name}}さんのおすすめの料理は{{$con->food_name}}です。
