@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -19,9 +20,11 @@ class NewUserIntroduction extends Mailable
 
     public $subject = "ユーザ新規登録";
 
-    public function __construct()
+    public string $user_name;
+
+    public function __construct(string $user_name)
     {
-        //
+        $this->user_name = $user_name;
     }
 
     /**

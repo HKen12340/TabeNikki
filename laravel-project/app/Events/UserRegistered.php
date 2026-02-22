@@ -20,11 +20,13 @@ class UserRegistered
      * Create a new event instance.
      */
 
-    public $request;
+    public string $email;
+    public string $user_name;
 
     public function __construct(Request $request)
     {
-        $this->request = $request->email;
+        $this->email = $request->email;
+        $this->user_name = $request->name;
     }
 
 }

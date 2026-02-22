@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserRegistered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,8 +21,6 @@ class UserController extends Controller
 
     public function register(Request $request,UserService $service){
         $service->register($request);
-        
-        event(new UserRegistered($request));
 
         return redirect()->route('index');
     }
