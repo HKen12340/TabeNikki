@@ -76,4 +76,8 @@ class ContentController extends Controller
          $result = $service->SearchContent($request);
          return view('/index',['items' => $result]);
     }
+
+    public function RagSearch(){
+        return view("RagSereach");
+    }
 }
