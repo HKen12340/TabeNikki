@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RandomFoodRecMail;
 
-class WeekeEventMailCommand extends Command
+class RandomFoodMailCommand extends Command
 {
 
     private Mailer $mailer;
@@ -19,7 +19,7 @@ class WeekeEventMailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:weeke-event-mail-command';
+    protected $signature = 'app:random-food-mail-command';
 
     /**
      * The console command description.
@@ -33,7 +33,6 @@ class WeekeEventMailCommand extends Command
     {
         return parent::__construct();
         $this->mailer = $mailer;
-        //メール内容を持ってくるサービスコンテナを記述
 
     }
 
@@ -42,23 +41,24 @@ class WeekeEventMailCommand extends Command
      */
     public function handle()
     {
-        //コンストラクタで持ってきたサービスコンテナのメソッドを呼び出し
-
         $users = User::get();
 
+        //ランダムで選ばれた料理情報を載せたメールを総世親
         foreach($users as $user){
-            //メール送信処理
+            //ユーザIDに該当する料理を抽出
             $test = Content::where('user_id',$user->id)->get();
 
             $max = Content::where('user_id',$user->id)->count();
 
             if($max != 0){
+                //ランダムで料理を選ぶ
                 $mail_content = $test->get(rand(0,$max));
                 Log::debug($mail_content->food_name);
 
                 $mail_content_name = $mail_content->food_name;
                 Log::debug($mail_content_name);
 
+                //メール送信
                 Mail::to($user->email)
                 ->send(new RandomFoodRecMail($user,$mail_content));
             }

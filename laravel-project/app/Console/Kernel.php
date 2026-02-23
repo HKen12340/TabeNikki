@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        //テスト用
+       //$schedule->command('app:random-food-mail-command')->everyMinute();
+
+       //毎週金曜18:00にランダム料理メールを送信
+       $schedule->command('app:random-food-mail-command')->fridays()->at('18:00');
+
     }
 
     /**
