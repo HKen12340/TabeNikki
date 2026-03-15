@@ -72,8 +72,8 @@ class ContentRepository implements ContentRepositoryInterface{
 
     public function SearchContent(Request $request)
     {
-        return Content::where("food_name","like","%{$request->SearchText}%")->
-         orWhere("shop_name","like","%{$request->SearchText}%")->
+        return Content::where("food_name","like","%{$request->SearchText}%")->where('user_id',Auth::user()->id)->
+         orWhere("shop_name","like","%{$request->SearchText}%")->where('user_id',Auth::user()->id)->
          orderBy('created_at','desc')->paginate(6);
     }
 
