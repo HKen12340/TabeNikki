@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libpng-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd
+    && docker-php-ext-install -j$(nproc) gd;
+
 
 #Composer install
 
@@ -21,7 +22,6 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');" 
 RUN mv composer.phar /usr/local/bin/composer
 
-
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 ENV COMPOSER_HOME /composer
@@ -31,3 +31,5 @@ ENV PATH $PATH:/composer/vendor/bin
 
 
 RUN composer global require "laravel/installer"
+
+RUN composer require openai-php/client;
