@@ -25,24 +25,7 @@ class OpenAiClient{
 
 
     public function test(){
-        $model = env('OPENAI_CHAT_MODEL', 'gpt-5-mini');
 
-
-       $input = <<<TEXT
-                自己紹介してください
-                TEXT;
-
-        $res = $this->http->post('responses', [
-            'json' => [
-                'model' => $model,
-                'input' => $input,
-            ],
-        ]);
-
-        $json = json_decode((string)$res->getBody(), true);
-
-
-        dd($json['output']);
     }
 
     public function embed(string $text):array{
@@ -61,7 +44,40 @@ class OpenAiClient{
     }
 
     public function answer(string $question,string $context): string{
-        return "";
+        $model = env('OPENAI_CHAT_MODEL', 'gpt-5-mini');
+
+       $input = <<<TEXT
+                あなたは「食べ歩きサービス」の思い出検索アシスタントです。
+                与えられた候補メモ(CONTEXT)の範囲だけを根拠にこたえてください。
+                候補がない場合は「見つかりませんでした」と返してください。
+                [QUESTION]
+                {$question}
+
+                [CONTEXT]
+                {$context}
+                TEXT;
+
+        $res = $this->http->post('responses', [
+            'json' => [
+                'model' => $model,
+                'input' => $input,
+            ],
+        ]);
+
+        if(isset($json['output_text'])){
+            return (string)$json['output_text'];
+        }
+
+        $json = json_decode((string)$res->getBody(), true);
+
+        $out = '';
+        foreach(($json['output'] ?? []) as $item){
+            foreach(($item['output'] ?? []) as $c){
+                $out .= $c['text'] ?? '';
+            }   
+        }
+        
+        return trim($out);
     }
 
 }
