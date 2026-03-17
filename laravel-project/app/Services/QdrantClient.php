@@ -56,7 +56,7 @@ class QdrantClient{
 
     public function search(array $vector,int $limit = 5):array{
 
-    $res = $this->http->post("collections/{$this->collection}/points/search",[
+        $res = $this->http->post("collections/{$this->collection}/points/search",[
             'json' => [
                 'json' => [
                     'vector' => $vector,
