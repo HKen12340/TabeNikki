@@ -47,7 +47,7 @@ class QdrantClient{
             'json' => [
                 'points' => [
                     'id' => (string)$id,
-                    'vector' => $vector,
+                    'vector' => $vector[0]['embedding'],
                     'payload' => $palyload
                 ],
             ],
@@ -55,18 +55,18 @@ class QdrantClient{
     }
 
     public function search(array $vector,int $limit = 5):array{
-
+            dd($vector);
         $res = $this->http->post("collections/{$this->collection}/points/search",[
-            'json' => [
                 'json' => [
-                    'vector' => $vector,
+                    'vector' => $vector[0],
                     'limit' => $limit,
                     'with_payload' => true
-                ],
-            ],
+                ]
         ]);
 
         $json = json_decode((string)$res->getBody(), true);
+
+        dd($json);
 
         return $json['result'] ?? [];
     }

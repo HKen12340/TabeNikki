@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Content;
 use App\Http\Requests\ContentRequest;
 use App\Services\ContentService;
@@ -77,7 +75,7 @@ class ContentController extends Controller
          return view('/index',['items' => $result]);
     }
 
-    public function RagSearch(){
+    public function RagSearchForm(){
         return view("RagSereach");
     }
 }

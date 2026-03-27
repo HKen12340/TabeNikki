@@ -39,8 +39,7 @@ class OpenAiClient{
         ]);
 
         $json = json_decode((string)$res->getBody(), true);
-        dd($json['data'][0]["embedding"]);
-        return [];
+        return [$json['data'][0]['embedding']];
     }
 
     public function answer(string $question,string $context): string{

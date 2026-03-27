@@ -6,12 +6,14 @@ use App\Models\Content;
 use Illuminate\Http\Request;
 use App\Repositories\ContentRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
-use RuntimeException;
 use App\Http\Requests\ContentRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\DB;
+use App\Services\QdrantClient;
+use App\Services\OpenAiClient;
 
 class ContentService
 {
@@ -28,6 +30,7 @@ class ContentService
 
     public function registContent(Request $request){
         $content = $this->repo->registContent($request);
+        $this->IndexOne($content->id,new OpenAiClient,new QdrantClient);
 
         $food_img_name = $this->UploadImage($request,$content,"food_img");
         $shop_img_name = $this->UploadImage($request,$content,"shop_img");
@@ -135,6 +138,29 @@ class ContentService
 
     public function SearchContent(Request $request){
         return $this->repo->SearchContent($request);
+    }
+
+    public function IndexOne(int $contentId,OpenAiClient $opneai,QdrantClient $qdrant){
+        $m = DB::table('contents')->where('id', $contentId)->get();
+        if ($m) return response()->json(['error' => 'memoru not found',404]);
+
+        //embedding化するテキスト
+        $text = trim(implode("\n",array_filter([
+            "料理名:" . ($m->food_name ?? ''),
+            "店名" . ($m->shop_name ?? ''),
+            "コメント" .  ($m->thoughts ?? ''),
+            "来店日" .  ($m->visit_date ?? ''),
+        ])));
+
+        $vec = $opneai->embed($text);
+
+        // text-embedding-3-large はデフォルト3072次元
+        $qdrant->ensureCollection(count($vec));
+
+        $qdrant->upsert($m->id,[
+            'user_id' => (int)$m->user_id
+        ]);
+
     }
 
 }

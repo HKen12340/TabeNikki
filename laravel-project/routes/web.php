@@ -25,8 +25,9 @@ Route::middleware('auth')->group(function(){
     Route::post('/registform',[App\Http\Controllers\ContentController::class,'registContent'])->name('ContentRegist');
     Route::get('/content/{id}',[App\Http\Controllers\ContentController::class,'detailContent'])->name('detailContent');
     Route::get('/update/{id}',[App\Http\Controllers\ContentController::class,'updateForm'])->name('updateForm');
-    Route::get('/ragsereach',[App\Http\Controllers\ContentController::class,'RagSearch'])->name('RagSearch');
+    Route::get('/ragsereach',[App\Http\Controllers\ContentController::class,'RagSearchForm'])->name('RagSearchForm');
     Route::patch('/update/{id}',[App\Http\Controllers\ContentController::class,'updateContent'])->name('updateContent');
     Route::delete('/delete/{id}',[App\Http\Controllers\ContentController::class,'DeleteContent'])->name('deleteContent');
     Route::post('/index',[App\Http\Controllers\ContentController::class,'SearchContent'])->name("SearchContent");
+    Route::post('/ragsereach',[App\Http\Controllers\RAGController::class,'search'])->name("RAGSearch");
 });
