@@ -76,6 +76,6 @@ class ContentController extends Controller
     }
 
     public function RagSearchForm(){
-        return view("RagSereach");
+        return view("/RagSearch");
     }
 }

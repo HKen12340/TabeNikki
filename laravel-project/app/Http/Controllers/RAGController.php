@@ -49,15 +49,12 @@ class RAGController extends Controller
 
         $ids = [];
 
-        dd($hits);
-
         foreach($hits as $h){
             if((int)($h['payload']['user_id'] ?? 0) === $userId){
                 $ids[] = (int)$h['id'];
             }
         }
 
-        dd($ids);
         if(count($ids) === 0){
             // return response()->json([
             //     'answer' => '見つかりませんでした(候補データがありません)',
@@ -66,8 +63,6 @@ class RAGController extends Controller
         }
 
         $rows = DB::table('contents')->whereIn('id',$ids)->get();
-        dd($rows);
-
 
         $context = $rows->map(function($m){
             return implode("\n",array_filter([
@@ -79,17 +74,14 @@ class RAGController extends Controller
             ]));
         })->implode("\n\n---\n\n");
 
-        dd($context);
-
-
         $answer = $opneai->answer($q,$context);
 
-        Log::debug("test4");
-        dd($answer);
+
         // return response()->json([
         //     'answer' => $answer,
         //     'candidates' => $rows,
         // ]);
+        return view('RagSearch',['answer' => $answer]);
 
     }
 

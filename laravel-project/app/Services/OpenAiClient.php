@@ -69,14 +69,16 @@ class OpenAiClient{
 
         $json = json_decode((string)$res->getBody(), true);
 
-        $out = '';
-        foreach(($json['output'] ?? []) as $item){
-            foreach(($item['output'] ?? []) as $c){
-                $out .= $c['text'] ?? '';
-            }   
-        }
+
+
+        // $out = '';
+        // foreach(($json['output'] ?? []) as $item){
+        //     foreach(($item['output'] ?? []) as $c){
+        //         $out .= $c['text'] ?? '';
+        //     }   
+        // }
         
-        return trim($out);
+        return trim($json['output'][1]['content'][0]['text']);
     }
 
 }

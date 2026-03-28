@@ -141,8 +141,10 @@ class ContentService
     }
 
     public function IndexOne(int $contentId,OpenAiClient $opneai,QdrantClient $qdrant){
-        $m = DB::table('contents')->where('id', $contentId)->get();
-        if ($m) return response()->json(['error' => 'memoru not found',404]);
+
+        $m = DB::table('contents')->where('id', $contentId)->first();
+        
+        //if ($m) return response()->json(['error' => 'memoru not found',404]);
 
         //embedding化するテキスト
         $text = trim(implode("\n",array_filter([
@@ -157,7 +159,7 @@ class ContentService
         // text-embedding-3-large はデフォルト3072次元
         $qdrant->ensureCollection(count($vec));
 
-        $qdrant->upsert($m->id,[
+        $qdrant->upsert($m->id,$vec,[
             'user_id' => (int)$m->user_id
         ]);
 

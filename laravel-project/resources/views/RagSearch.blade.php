@@ -9,4 +9,9 @@
     <textarea cols="60" rows="8" name="q"></textarea>
     <input type="submit" />
 </form>
+
+
+<div>
+    {{$answer ?? ''}}
+</div>
 @endsection

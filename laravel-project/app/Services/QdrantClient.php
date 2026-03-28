@@ -42,20 +42,24 @@ class QdrantClient{
     }
 
 
-    public function upsert(int|string $id,array $vector,array $palyload = []):void{
-        $this->http->put("collections/{$this->collection}/points",[
+    public function upsert(int $id,array $vector,array $palyload = []):void{
+
+
+        $res = $this->http->put("collections/{$this->collection}/points", [
             'json' => [
                 'points' => [
-                    'id' => (string)$id,
-                    'vector' => $vector[0]['embedding'],
-                    'payload' => $palyload
+                    [
+                        'id' => $id,
+                        'vector' => $vector[0],
+                        'payload' => $palyload
+                    ]
                 ],
             ],
         ]);
+
     }
 
     public function search(array $vector,int $limit = 5):array{
-            dd($vector);
         $res = $this->http->post("collections/{$this->collection}/points/search",[
                 'json' => [
                     'vector' => $vector[0],
@@ -65,8 +69,6 @@ class QdrantClient{
         ]);
 
         $json = json_decode((string)$res->getBody(), true);
-
-        dd($json);
 
         return $json['result'] ?? [];
     }
