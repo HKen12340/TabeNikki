@@ -2,13 +2,12 @@
 namespace App\Services;
 use GuzzleHttp\Client;
 
-use Illuminate\Support\Facades\Log;
-
 
 class OpenAiClient{
     
     public Client $http;
 
+    //GuzzleHttpライブラリのchatgpt初期接続
     public function __construct()
     {
 
@@ -23,25 +22,21 @@ class OpenAiClient{
 
     }
 
-
-    public function test(){
-
-    }
-
+    //chatgptに登録データを送ってベクトルに返還させる
     public function embed(string $text):array{
         $model = env('OPENAI_CHAT_MODEL', 'text-embedding-3-large');
 
         $res = $this->http->post('embeddings', [
             'json' => [
                 'model' => $model,
-                'input' => "リンゴ"
+                'input' => $text
             ],
         ]);
-
         $json = json_decode((string)$res->getBody(), true);
         return [$json['data'][0]['embedding']];
     }
 
+    //Qdrantから引き出したデータをcahtgptに乗せる
     public function answer(string $question,string $context): string{
         $model = env('OPENAI_CHAT_MODEL', 'gpt-5-mini');
 
@@ -63,20 +58,9 @@ class OpenAiClient{
             ],
         ]);
 
-        if(isset($json['output_text'])){
-            return (string)$json['output_text'];
-        }
 
         $json = json_decode((string)$res->getBody(), true);
 
-
-
-        // $out = '';
-        // foreach(($json['output'] ?? []) as $item){
-        //     foreach(($item['output'] ?? []) as $c){
-        //         $out .= $c['text'] ?? '';
-        //     }   
-        // }
         
         return trim($json['output'][1]['content'][0]['text']);
     }

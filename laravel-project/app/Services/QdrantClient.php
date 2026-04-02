@@ -8,6 +8,7 @@ class QdrantClient{
     private Client $http;
     private string $collection;
     
+    //Qdarnt初期接続
     public function __construct()
     {
         $this->http = new Client([
@@ -21,6 +22,7 @@ class QdrantClient{
         $this->collection = env('QDRANT_COLLECTION','memories');
     }
 
+    //コレクション作成
     public function ensureCollection(int $vectorSize) : void
     {
         try{
@@ -42,6 +44,7 @@ class QdrantClient{
     }
 
 
+    //コレクションに要素登録
     public function upsert(int $id,array $vector,array $palyload = []):void{
 
 

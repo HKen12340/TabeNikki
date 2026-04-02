@@ -149,9 +149,11 @@ class ContentService
         //embedding化するテキスト
         $text = trim(implode("\n",array_filter([
             "料理名:" . ($m->food_name ?? ''),
-            "店名" . ($m->shop_name ?? ''),
-            "コメント" .  ($m->thoughts ?? ''),
-            "来店日" .  ($m->visit_date ?? ''),
+            "店名:" . ($m->shop_name ?? ''),
+            "料金:" . ($m->price ?? ''),
+            "場所:" . ($m->place ?? ''),
+            "コメント:" .  ($m->thoughts ?? ''),
+            "来店日:" .  ($m->visit_date ?? ''),
         ])));
 
         $vec = $opneai->embed($text);
