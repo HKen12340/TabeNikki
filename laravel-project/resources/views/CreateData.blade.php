@@ -22,38 +22,38 @@
                             @csrf
                         
                             <div class="form-grou mb-3">
-                                <label>food_name:</label>
+                                <label>料理名:</label>
                                 <input type="text" class="form-control" name="food_name" maxlength="100" required>
                             </div>
                             <div class="form-grou mb-3">
-                                <label>shop_name:</label>
+                                <label>店名:</label>
                                 <input type="text" class="form-control" name="shop_name" maxlength="100" required>
                             </div>
                             <div class="form-grou mb-3">
-                                <label for="">price:</label>
+                                <label for="">料金:</label>
                                 <input type="number" class="form-control" name="price" required>
                             </div>
                             
                             <div class="form-grou mb-3">
-                                <label for="">visit_date:</label>
+                                <label for="">来店日:</label>
                                 <input type="date" class="form-control" name="visit_date" required>
                             </div>
 
                             <div class="form-grou mb-3">
-                                <label for="">place:</label>
+                                <label for="">場所:</label>
                                 <input type="text" class="form-control" name="place" maxlength="100" required>
                             </div>
 
                             <div class="form-grou mb-3">
-                                <label for="">food_img:</label>
+                                <label for="">料理写真:</label>
                                 <input type="file" class="form-control" name="food_img" >
                             </div>
                             <div class="form-grou mb-3">
-                                <label for="">shop_img:</label>
+                                <label for="">店舗写真:</label>
                                 <input type="file" class="form-control" name="shop_img" >
                             </div>
                             <div class="form-grou mb-3">
-                                <label for="">thoughts:</label>
+                                <label for="">感想:</label>
                                 <textarea name="thoughts" maxlength="300" class="form-control"></textarea>
                             </div>
                             <input type="submit" class="btn btn-primary">
