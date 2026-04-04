@@ -105,9 +105,11 @@ class ContentService
         }
     }
 
-     public function DeleteContent(Request $request)
+     public function DeleteContent(Request $request,$qdrant = new QdrantClient)
     {
          $contents =  $this->repo->deleteTragetContent($request);
+
+         $qdrant->delete($request->id);
 
             if($this->repo->deleteContentExists($request)){
                 foreach($contents as $content){
@@ -143,8 +145,7 @@ class ContentService
     public function IndexOne(int $contentId,OpenAiClient $opneai,QdrantClient $qdrant){
 
         $m = DB::table('contents')->where('id', $contentId)->first();
-        
-        //if ($m) return response()->json(['error' => 'memoru not found',404]);
+        dd($m->id);
 
         //embedding化するテキスト
         $text = trim(implode("\n",array_filter([

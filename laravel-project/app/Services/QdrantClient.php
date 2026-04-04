@@ -75,5 +75,14 @@ class QdrantClient{
 
         return $json['result'] ?? [];
     }
+
+    public function delete(int $id){
+
+        $res = $this->http->post("collections/{$this->collection}/points/delete",[
+            'json' => [
+                'points' => [$id]
+            ]
+        ]);
+    }
     
 }
