@@ -87,9 +87,9 @@ class ContentController extends Controller
     }
 
     public function TestMailSend(){
-        $user = User::where('id',Auth::user()->id)->get();
+        $user = User::where('id',Auth::user()->id)->first();
 
-        dd($user);
+        //dd($user);
         //ランダムで選ばれた料理情報を載せたメールを総世親
 
             //ユーザIDに該当する料理を抽出
@@ -101,12 +101,10 @@ class ContentController extends Controller
                 //ランダムで料理を選ぶ
                 $mail_content = $test->get(rand(0,$max));
 
-                //$mail_content_name = $mail_content->food_name;
-
                 //メール送信
                 Mail::to($user->email)
                 ->send(new RandomFoodRecMail($user,$mail_content));
             }
-        //return view("/testmail");
+        return view("/testmail",["msg" => "メールの送信が成功しました"]);
     }
 }
