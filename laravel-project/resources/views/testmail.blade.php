@@ -7,8 +7,11 @@
 
 <form action={{route('testmail')}} method="post" >
     @csrf
-    <button type="submit" class="btn btn-primary" value="テスト" />
+    <input type="submit" class="btn btn-primary" value="テスト">
 </form>
 
+@if(!empty($msg ?? ""))
+    {{$msg}}
+@endif
 
 @endsection
