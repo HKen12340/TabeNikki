@@ -7,8 +7,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{route('showContentRegistForm')}}">登録フォーム</a>
             </li>
-                <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{{route('RagSearchForm')}}">RAG検索</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('testmail')}}">料理メール</a>
             </li>
             <li>
                 <p class="nav-link">ユーザー：{{\Illuminate\Support\Facades\Auth::user()->name}}</p>

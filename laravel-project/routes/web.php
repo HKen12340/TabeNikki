@@ -29,5 +29,7 @@ Route::middleware('auth')->group(function(){
     Route::delete('/delete/{id}',[App\Http\Controllers\ContentController::class,'DeleteContent'])->name('deleteContent');
     Route::post('/index',[App\Http\Controllers\ContentController::class,'SearchContent'])->name("SearchContent");
     Route::get('/ragsearch',[App\Http\Controllers\ContentController::class,'RagSearchForm'])->name('RagSearchForm');
-    Route::post('/ragsearch',[App\Http\Controllers\RAGController::class,'search'])->name("RAGSearch");
+    Route::post('/ragsearch',[App\Http\Controllers\RAGController::class,'search'])->name('RAGSearch');
+    Route::get('/testmail',[App\Http\Controllers\ContentController::class,'TestMail'])->name('testmail');
+    Route::post('/testmail',[App\Http\Controllers\ContentController::class,'TestMailSend'])->name('testmail');
 });
