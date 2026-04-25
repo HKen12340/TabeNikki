@@ -145,7 +145,6 @@ class ContentService
     public function IndexOne(int $contentId,OpenAiClient $opneai,QdrantClient $qdrant){
 
         $m = DB::table('contents')->where('id', $contentId)->first();
-        dd($m->id);
 
         //embedding化するテキスト
         $text = trim(implode("\n",array_filter([

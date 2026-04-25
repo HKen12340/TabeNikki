@@ -33,9 +33,9 @@ class ContentController extends Controller
         return redirect("/index");
     }
 
-    public function detailContent(Request $request){
+    public function detailContent(Request $request,ContentService $service){
         try{
-            $content = Content::where('id', '=' ,$request->id)->where('user_id','=',Auth::user()->id)->firstOrfail();
+            $content = $service->detailContent($request);
         }catch(ModelNotFoundException){
             return view("404NotFound");
         }
@@ -89,7 +89,7 @@ class ContentController extends Controller
     public function TestMailSend(){
         $user = User::where('id',Auth::user()->id)->first();
 
-        //dd($user);
+        
         //ランダムで選ばれた料理情報を載せたメールを総世親
 
             //ユーザIDに該当する料理を抽出
