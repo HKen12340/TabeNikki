@@ -18,7 +18,7 @@
                       grid-template-columns: 1fr 1fr 1fr;gap:30px;">
                   @endif
                   <div class="card border col-3 m-3  p-0" style="width:100%;">
-                      <img class="card-img-top" src={{ asset(optional($item->image)->food_img) }} alt="">
+                      <img class="card-img-top" src={{ asset(optional($item->image)->food_img) }} style="width: 100%;height:280px" alt="">
                       <div class="card-body">
                           <h5 class="card-title">{{$item->food_name}}</h5>
                           <p class="card-text">店名：{{$item->shop_name}}</p>

@@ -16,7 +16,7 @@
             </form>
 
             @if(!empty($answer))
-                <div class="border p-4 m-auto">
+                <div class="border p-4 m-auto mt-2">
                     {{$answer}}
                 </div>
             @endif
