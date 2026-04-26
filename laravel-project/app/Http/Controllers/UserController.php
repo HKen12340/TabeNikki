@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UserRegistaration;
 
 use App\Services\UserService;
 
@@ -19,10 +20,11 @@ class UserController extends Controller
         return view('register');
     }
 
-    public function register(Request $request,UserService $service){
-        $service->register($request);
-
-        return redirect()->route('index');
+    public function register(UserRegistaration $request,UserService $service){
+        if($request->validated()){
+            $service->register($request);
+            return redirect()->route('index');
+        }
     }
 
     public function profile(){
