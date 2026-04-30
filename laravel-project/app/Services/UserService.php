@@ -19,13 +19,13 @@ class UserService{
         
         //ユーザ情報重複チェック
         if($this->repo->UserInfoExists($request)){
-            return back();
+            return false;
         }
-        $user = $this->repo->UserCreate($request);
 
+        $user = $this->repo->UserCreate($request);
         event(new UserRegistered($request));
 
-        // //ログイン実行
+        //ログイン実行
         Auth::login($user);
     }
 

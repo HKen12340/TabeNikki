@@ -3,7 +3,6 @@
 @section('title',"記録詳細")
 
 @section('content')
-<div class="border p-4 col-7 m-auto mt-5 mb-5">
     <!-- モーダルを開くボタン・リンク -->
     <a class="btn btn-danger" data-toggle="modal" data-target="#testModal">削除</a>
 
@@ -54,4 +53,3 @@
         </div>
     </div>
 @endsection
-    

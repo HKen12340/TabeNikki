@@ -6,9 +6,15 @@
     <div class="m-3">
         <div class="border col-7 p-4 m-auto align-items-center">
             <h1>ログイン</h1>
-            <!-- フラッシュエラーメッセージ -->
-            @if ($errors->has('msg'))
-                <p>{{$errors->first('msg')}}</p>
+
+            {{--  エラーメッセージをすべて表示する  --}}
+            @if ($errors->any())
+                <p style="color: red">以下の入力エラーが発生しています</p>
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li><p style="color: red">{{$error}}</p></li>
+                    @endforeach
+                </ul>
             @endif
             <a href={{route("userRegistForm")}}>ユーザ登録</a>
             <form action="/" method="post">

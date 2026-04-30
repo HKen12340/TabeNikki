@@ -22,8 +22,14 @@ class UserController extends Controller
 
     public function register(UserRegistaration $request,UserService $service){
         if($request->validated()){
-            $service->register($request);
-            return redirect()->route('index');
+
+            $result = $service->register($request);
+            
+            if($result === false){
+                return back()->withErrors(['msg' => '入力された情報はすでに使用されています']);
+            }
+     
+           return redirect()->route('index');
         }
     }
 

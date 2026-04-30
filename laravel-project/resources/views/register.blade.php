@@ -7,6 +7,15 @@
     <div class="m-3">
         <div class="border col-7 p-4 m-auto">
             <h1>登録画面</h1>
+            {{--  エラーメッセージをすべて表示する  --}}
+            @if ($errors->any())
+                <p style="color: red">以下の入力エラーが発生しています</p>
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li><p style="color: red">{{$error}}</p></li>
+                    @endforeach
+                </ul>
+            @endif
             <form action="register" method="post">
                 @csrf
                 <div class="form-grou mb-3">
