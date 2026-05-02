@@ -89,7 +89,7 @@ class ContentService
             $imgname = $filename."_".Auth::user()->id."_".$content->id.".".$img_extension;
 
             $manager = new ImageManager(new Driver());
-            $resize_image = $manager->read($imgfile)->resize(300,300);
+            $resize_image = $manager->read($imgfile)->resize(610,380);
 
             //写真アップロード
             Storage::disk('public')->put(
