@@ -23,7 +23,9 @@ class UserService{
         }
 
         $user = $this->repo->UserCreate($request);
-        event(new UserRegistered($request));
+
+        //デプロイ先でメール送信環境が準備できていないので無効化
+        // event(new UserRegistered($request));
 
         //ログイン実行
         Auth::login($user);
