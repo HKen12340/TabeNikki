@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-<h1 style="text-align: center">404 Not Found</h1>
-</body>
-</html>
+@extends('layouts.base')
+
+@section('title',"記録詳細")
+
+@section('content')
+<div>
+    <h1 style="text-align:center;margin-top:18%">指定されたページが見つかりません</h1>
+</div>
+@endsection
+
