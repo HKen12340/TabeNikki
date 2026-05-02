@@ -159,7 +159,7 @@ class ContentService
         $vec = $opneai->embed($text);
 
         // text-embedding-3-large はデフォルト3072次元
-        $qdrant->ensureCollection(count($vec));
+        $qdrant->ensureCollection();
 
         $qdrant->upsert($m->id,$vec,[
             'user_id' => (int)$m->user_id

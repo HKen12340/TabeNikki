@@ -23,7 +23,7 @@ class QdrantClient{
     }
 
     //コレクション作成
-    public function ensureCollection(int $vectorSize) : void
+    public function ensureCollection() : void
     {
         try{
             $this->http->get("collections/{$this->collection}");
@@ -35,7 +35,7 @@ class QdrantClient{
         $this->http->put("collections/{$this->collection}",[
             'json' => [
                 'vectors' => [
-                    'size' => $vectorSize,
+                    'size' => 3072,
                     'distance' => 'Cosine',
                 ],
             ],
