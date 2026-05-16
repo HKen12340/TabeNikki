@@ -7,6 +7,7 @@ services:
     working_dir: /var/www/laravel-project
     depends_on:
       - mailhog
+      - ollama
     networks:
       - app_net
 
@@ -85,6 +86,17 @@ services:
       - "6333:6333"
     volumes:
       - ./docker/qdrant_data:/qdrant/data
+    networks:
+      - app_net
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - 11434:11434
+    volumes:
+      - ./docker/ollama:/root/.ollama
+
     networks:
       - app_net
       
