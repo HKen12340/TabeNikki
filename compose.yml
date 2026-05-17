@@ -89,16 +89,17 @@ services:
     networks:
       - app_net
 
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - 11434:11434
-    volumes:
-      - ./docker/ollama:/root/.ollama
+#デプロイ環境ではコメント化する
+  # ollama:
+  #   image: ollama/ollama
+  #   container_name: ollama
+  #   ports:
+  #     - 11434:11434
+  #   volumes:
+  #     - ./docker/ollama:/root/.ollama
 
-    networks:
-      - app_net
+  #   networks:
+  #     - app_net
       
 networks:
   app_net:
