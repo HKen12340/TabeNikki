@@ -7,7 +7,8 @@ services:
     working_dir: /var/www/laravel-project
     depends_on:
       - mailhog
-      - ollama
+      #ollamaへの接続：デプロイ環境ではコメント化する
+      # - ollama
     networks:
       - app_net
 
@@ -89,17 +90,17 @@ services:
     networks:
       - app_net
 
-#デプロイ環境ではコメント化する
-  # ollama:
-  #   image: ollama/ollama
-  #   container_name: ollama
-  #   ports:
-  #     - 11434:11434
-  #   volumes:
-  #     - ./docker/ollama:/root/.ollama
+#ollamaコンテナ：デプロイ環境ではコメント化する
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - 11434:11434
+    volumes:
+      - ./docker/ollama:/root/.ollama
 
-  #   networks:
-  #     - app_net
+    networks:
+      - app_net
       
 networks:
   app_net:
